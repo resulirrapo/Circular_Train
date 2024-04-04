@@ -184,91 +184,29 @@ void clear_all(Train* train) {
 
 
 void search(Train* train, char* str, FILE* fp) {
-    int len = strlen(str);
-    Node* current = train->current;
-
-    while (current != NULL) {
-        Node* temp = current;
-        int found = 1;
-
-        for (int i = 0; i < len; ++i) {
-            if (temp == NULL || temp->value != str[i]) {
-                found = 0;
-                break;
-            }
-            temp = temp->next;
+    Node* temp = train->current;
+    int found = 0;
+    while (temp != NULL) {
+        for (int i = 0; i < strlen(str); i++) {
+            if (temp->value == str[i]) {
+            found = 1;
+            break;
         }
-
-        if (found) {
-            train->current = current; // Update the current node to the start of the found string
-            return;
-        }
-
-        current = current->next; // Move to the next node to continue the search
+        temp = temp->next;
     }
-
-    fprintf(fp, "ERROR\n");
+    if (!found) {
+        fprintf(fp,"ERROR\n");
+    }
 }
-
+}
 
 
 void search_left(Train* train, char* str, FILE* fp) {
-    int len = strlen(str);
-    Node* current = train->current;
-    int found = 0;
-
-    // Iterate leftwards from the current position
-    while (current != train->sant && !found) {
-        Node* temp = current;
-        int match = 1;
-
-        // Check if the substring matches, starting from the end of the substring
-        for (int i = 0; i < len; ++i) {
-            if (!temp || temp->value != str[i]) {
-                match = 0;
-                break;
-            }
-            temp = temp->prev; // Move left
-        }
-
-        if (match) {
-            found = 1;
-            train->current = temp->next; // Update the mechanic's position to the first character of the found string
-        } else {
-            current = current->prev; // Continue searching left
-        }
-    }
-        fprintf(fp, "ERROR\n"); // Print ERROR if the string is not found
 }
 
+
+
 void search_right(Train* train, char* str, FILE* fp) {
-    int len = strlen(str);
-    Node* current = train->current;
-    int found = 0;
-
-    while (current != NULL && !found) { // Ensure not to pass the end of the train
-        Node* temp = current;
-        int match = 1;
-
-        for (int i = 0; i < len; ++i) {
-            if (!temp || temp->value != str[i]) {
-                match = 0;
-                break;
-            }
-            temp = temp->next; // Move right
-        }
-
-        if (match) {
-            found = 1;
-            train->current = temp->prev; // Update the mechanic's position to the last character of the found string
-        } else {
-            current = current->next; // Continue searching right
-        }
-    }
-
-    if (!found) {
-        fprintf(fp, "ERROR\n"); // Print ERROR if the string is not found
-    }
 }
 
 void write_char(Train* mechanic, char value) {
@@ -369,17 +307,17 @@ int main() {
         fgets(c, 20, fp);
 		printf("%s\n", c);
 
-		if (!strncmp(c,SHOW_C,12)) {
-			show_current(train,fout);
+        if (!strncmp(c, SWITCH, 6) !=0 ) {
+			Switch(queue);
 		}
-		if(!strncmp(c,SHOW,4)){
+		else if (!strncmp(c,SHOW_C,12)) {
+			show_current(train,fout);
+		} 
+        else if (!strncmp(c,SHOW,4)) {
 			show(train,fout);
 		}
 		 else if (strncmp(c,EXECUTE,7) != 0) {
 			enqueue(queue, c);
-		}
-		else if (!strncmp(c, SWITCH, 6) !=0 ) {
-			Switch(queue);
 		}
 		 else {
 			if (queue->front) {
@@ -397,7 +335,7 @@ int main() {
 				clear_all(train);
 			}
 			else if (!strncmp(queue->front->elem, SEARCH, 6)) {
-				char* searchString = queue->front->elem + 7; // Skip the "SEARCH " part to get the string
+				char* searchString = queue->front->elem + 7;
 				search(train, searchString, fout);
 			}
 			 else if (!strncmp(queue->front->elem,SR,12)) {
@@ -421,10 +359,11 @@ int main() {
 		  dequeue(queue);
 		}
     }
-
+// destroyQueue(queue);
+free(train);
+free(c);
 fclose(fp);
 fclose(fout);
-
 
 	return 0;
 }
