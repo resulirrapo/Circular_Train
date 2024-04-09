@@ -79,11 +79,13 @@ void dequeue(Queue* q){
 		QueueNode* temp = q->front;
 
 		if (q->front == q->rear) {
+			free(q->rear->elem);
 			free(q->rear);
 			q->front = q->rear = NULL;
 		} else 
 		{
 			q->front = q->front->next;
+			free(temp->elem);
 			free(temp);
 		}
 		q->size--;
@@ -194,7 +196,7 @@ void search(Train* train, char* str, FILE* fp) {
                 found = 0;
                 break;
             }
-            checker = checker->next; // move to the next carriage
+            checker = checker->next;
             s++; // move to the next character in the string
 
 			// if we meet the end , connec twith the first vagon
@@ -214,7 +216,7 @@ void search(Train* train, char* str, FILE* fp) {
             temp = train->sant->next;
         }
 
-    } while (temp != start); // end the search if we're back at the start
+    } while (temp != start); // end the search if we re back at the start
 
     if (!found) {
         fprintf(fp, "ERROR\n");
@@ -433,7 +435,7 @@ int main() {
 			}
 			else if (!strncmp(queue->front->elem,WRITE_X,5)) {
 				write_char(train, queue->front->elem[6]);
-			} 
+			}
 			else if (!strncmp(queue->front->elem,INSL,11)) {
 				insert_left(train, queue->front->elem[12],fout);
 			}
@@ -441,14 +443,16 @@ int main() {
 				insert_right(train, queue->front->elem[13]);
 			}
 			}
-		  dequeue(queue);
+		 dequeue(queue);
 		}
     }
-
-free(train);
-free(c);
 fclose(fp);
 fclose(fout);
-
+clear_all(train); // removes insert right from valgrind problem
+free(queue);
+free(train->current);
+free(train->sant);
+free(c);
+free(train);
 	return 0;
 }
