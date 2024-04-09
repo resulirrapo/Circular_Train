@@ -1,0 +1,33 @@
+Resuli Rrapo 321CD
+
+
+Queue:
+
+The whole queue structure including the functions: createQueue, isQueueEmpty, enqueue, dequeue, destroyQueue were taken by the lab
+of queue
+
+0) General functions:
+
+init_train - creates a circular doubled list with santinela and only one node with the value of #.
+freetrain - iterates through the list and removes the node one by one.
+
+1) Update functions:
+
+move_mechanic_left - moves the current position of the mechanic to the node one the left except the case when this node is the current one.
+move_mechanic_right - moves the current position of the mechanic to the node one the right, if there is no node we add one connect it with sant (circular doubled list)
+write_c - writes a value at the current position of the mechanic
+clear_cell - removes te current node and creates the connection of the prev and net node with each other and moves the current postion on the left, if the node was the first one the new current postion of the mechanic will be on the last node
+clear_all - removes all the nodes and resets the train to the inital form
+insert_left - inserts a character to the left of the current postition and moves the mechanic there.
+insert_right - inserts a character to the right of the current postition and moves the mechanic there.
+
+2) Search functions:
+
+search - iterates through the list a single time to find the desired string and when it finds it is moves the current postion to the first character of the string.
+search_left - iterates in the left direction through the list until it meets the locomotiv(sant) if it finds the desired string it moves the current postion to last character of that string.
+search_right - iterates in the right direction through the list until it meets the locomotiv(sant) if it finds the desired string it moves the current postion to last character of that string.
+
+3) Query functions:
+show_current - shows the value of the current position of the mechanic
+show - show the whole list and the current postion of the mechanic
+switch - we inverse the whole list

@@ -1,3 +1,5 @@
+// Resuli Rrapo 321CD
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -39,6 +41,7 @@ typedef struct Queue{
 	long size;
 }Queue;
 
+// function to create a new queue
 Queue* createQueue(){
 	Queue * coada = malloc(sizeof(Queue));
 	coada->front = NULL;
@@ -47,14 +50,17 @@ Queue* createQueue(){
 	return coada;
 } 
 
+// function to check if the queue is empty
 int isQueueEmpty(Queue *q){
 	if (q->rear == NULL)
 		return 1;
 	return 0;
 }
 
+// function to add a new element to the queue
 void enqueue(Queue *q, char* command){
 	QueueNode* node = malloc(sizeof(QueueNode));
+	node->next = NULL;
 	if(isQueueEmpty(q)) {
 
 		q->rear = node;
@@ -72,18 +78,21 @@ void enqueue(Queue *q, char* command){
 	q->size++;
 }
 
+// function to remove an element from the queue
 void dequeue(Queue* q){
 	if (isQueueEmpty(q)) {
 		return;
 	}
 		QueueNode* temp = q->front;
 
+		// if the queue has only one element
 		if (q->front == q->rear) {
 			free(q->rear->elem);
 			free(q->rear);
 			q->front = q->rear = NULL;
 		} else 
 		{
+			// if the queue has more than one element
 			q->front = q->front->next;
 			free(temp->elem);
 			free(temp);
@@ -91,6 +100,7 @@ void dequeue(Queue* q){
 		q->size--;
 }
 
+// function to free the queue
 void destroyQueue(Queue *q){
 	while (isQueueEmpty(q)) {
 		dequeue(q);
@@ -98,8 +108,7 @@ void destroyQueue(Queue *q){
 	free(q);
 }
 
-
-
+// function to initialize the train
 Train* init_train() {
     Train  *train = (Train  *)malloc(sizeof(struct Train));
 	train->sant = malloc(sizeof(Node));
@@ -114,6 +123,18 @@ Train* init_train() {
     return train;
 }
 
+// function to free the train
+void freetrain(Train* train) {
+	Node* temp = train->sant;
+	Node* iter = train->sant;
+	while (iter != NULL) {
+		temp = iter;
+		iter = iter->next;
+		free(temp);
+	}
+	free(train);
+}
+// move the mechanic to the left
 int move_mechanic_left(Train* mechanic) {
     if (mechanic->current != mechanic->sant->next) {
         mechanic->current = mechanic->current->prev;
@@ -123,7 +144,7 @@ int move_mechanic_left(Train* mechanic) {
 		}
 }
 
-
+// move the mechanic to the right
 void move_mechanic_right(Train* mechanic) {
     if (mechanic->current->next == NULL) {
         mechanic->current->next = malloc(sizeof(Node));
@@ -134,6 +155,7 @@ void move_mechanic_right(Train* mechanic) {
     mechanic->current = mechanic->current->next;
 }
 
+// clear the current vagon
 void clear_cell(Train* train) {
 	// return to initial state if there is only one vagon
     if (train->current == train->sant->next && train->current->next == NULL) {
@@ -163,6 +185,7 @@ void clear_cell(Train* train) {
     free(temp);
 }
 
+// clear all the vagons except the first one
 void clear_all(Train* train) {
     Node* current = train->sant->next;
 
@@ -180,6 +203,7 @@ void clear_all(Train* train) {
     train->sant->next = train->current;
 }
 
+// search for a string in the train
 void search(Train* train, char* str, FILE* fp) {
     Node* start = train->current;
     Node* temp = start;
@@ -223,8 +247,7 @@ void search(Train* train, char* str, FILE* fp) {
     }
 }
 
-
-
+// search for a string to the left of the current vagon
 void search_left(Train* train, char* str, FILE* fp) {
     Node* temp = train->current;
 	char* s = str;
@@ -256,6 +279,7 @@ void search_left(Train* train, char* str, FILE* fp) {
     }
 }
 
+// search for a string in the right direction
 void search_right(Train* train, char* str, FILE* fp) {
     Node* temp = train->current;
 	char* s = str;
@@ -287,11 +311,12 @@ void search_right(Train* train, char* str, FILE* fp) {
     }
 }
 
-
+// write a character to the current vagon
 void write_char(Train* mechanic, char value) {
     mechanic->current->value = value;
 }
 
+// insert a vagon to the left of the current vagon
 void insert_left(Train* mechanic, char value, FILE* fp) {
 	if(mechanic->current->prev == mechanic->sant) {
 			fprintf(fp,"ERROR\n");
@@ -406,6 +431,7 @@ int main() {
 			enqueue(queue, c);
 		}
 		 else {
+			// checking if the queue is not empty
 			if (queue->front) {
 
 			if (!strcmp(queue->front->elem,MR)) {
@@ -446,13 +472,13 @@ int main() {
 		 dequeue(queue);
 		}
     }
+
 fclose(fp);
 fclose(fout);
 clear_all(train); // removes insert right from valgrind problem
 free(queue);
-free(train->current);
-free(train->sant);
 free(c);
-free(train);
+freetrain(train);
+
 	return 0;
 }
